@@ -14,7 +14,7 @@ import java.util.Map;
 public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -39,4 +39,5 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
         }
         return true;
     }
+
 }

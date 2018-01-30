@@ -1,7 +1,7 @@
-package com.abcft.report.controller;
+package com.peng.certrecognition.controller;
 
-import com.abcft.report.domain.User;
-import com.abcft.report.service.UserService;
+import com.peng.certrecognition.domain.User;
+import com.peng.certrecognition.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class BaseController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     ResponseEntity<?> response(Object response, HttpStatus httpStatus) {
         return new ResponseEntity<>(response, httpStatus);
@@ -60,4 +60,5 @@ public class BaseController {
     User getCurrentUser() {
         return userService.getUserByCookie();
     }
+
 }

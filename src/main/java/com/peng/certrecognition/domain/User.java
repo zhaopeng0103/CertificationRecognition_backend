@@ -1,16 +1,20 @@
 package com.peng.certrecognition.domain;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.util.StringUtils;
+
+import java.util.Date;
 
 @Document(collection = "user")
 public class User {
 
+    @Field("_id")
+    private String id;
+
     @Field("username")
-    private String userName;
+    private String username;
 
     @Field("avatar")
     private String avatar;
@@ -25,49 +29,46 @@ public class User {
     @Field("phone")
     private String phone;
 
-    @Field("company")
-    private String company;
+    @Field("sex")
+    private String sex;
 
     @Field("active")
     private boolean active;
 
-    public User() {
-    }
+    @Field("create_time")
+    private Date createTime;
 
-    public User(String email) {
-        this.avatar = "";
-        this.userName = "";
-        this.email = email;
-        this.phone = "";
-        this.company = "";
-        this.password = "";
-        this.active = true;
-    }
+    @Field("update_time")
+    private Date updateTime;
 
-    public User(String avatar, String userName, String email, String password,
-                String phone, String company, String ownCloudPassword, String ownCloudToken, boolean active) {
+    public User() { }
+
+    public User(String username, String avatar, String email, String password, String phone, String sex, boolean active, Date createTime, Date updateTime) {
+        this.username = username;
         this.avatar = avatar;
-        this.userName = userName;
         this.email = email;
-        this.phone = phone;
-        this.company = company;
         this.password = password;
+        this.phone = phone;
+        this.sex = sex;
         this.active = active;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
-    private String genPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+    public String getId() {
+        return id;
     }
 
-    public boolean isValidPassword(String password) {
-        if (StringUtils.isEmpty(password.trim())) {
-            return false;
-        }
-        return BCrypt.checkpw(password, this.password);
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
-        this.password = genPassword(password);
+        this.password = password;
     }
 
     public String getAvatar() {
@@ -78,12 +79,12 @@ public class User {
         this.avatar = avatar;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -91,7 +92,6 @@ public class User {
     }
 
     public void setEmail(String email) {
-        // TODO email format verify
         this.email = email;
     }
 
@@ -103,12 +103,12 @@ public class User {
         this.phone = phone;
     }
 
-    public String getCompany() {
-        return company;
+    public String getSex() {
+        return sex;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
     public boolean isActive() {
@@ -119,16 +119,35 @@ public class User {
         this.active = active;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "active=" + active +
-                ", company='" + company + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", userName='" + userName + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", avatar='" + avatar + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", sex='" + sex + '\'' +
+                ", active=" + active +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
-
 }

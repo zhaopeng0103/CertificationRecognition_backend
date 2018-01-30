@@ -32,6 +32,7 @@ dependencies {
     compile 'org.springframework.security:spring-security-web:5.0.0.RELEASE'
     compile 'org.springframework.security:spring-security-config:5.0.0.RELEASE'
     compile "org.springframework.boot:spring-boot-starter-data-redis"
-    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.44'
+    compile "com.alibaba:fastjson:1.2.44"
+    compile "commons-codec:commons-codec:1.10"
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

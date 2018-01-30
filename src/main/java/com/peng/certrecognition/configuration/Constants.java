@@ -7,9 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class Constants {
 
-    public static final String TOKEN_PREFIX = "auto-report:token:";
-    public static final String DATASOURCE_QUEUE_KEY = "auto-report:datasource:queue";
-    public static final String REPORT_QUEUE_KEY = "auto-report:report:queue";
+    public static final String TOKEN_PREFIX = "CertificationRecognition_backend:token:";
     public static String IMAGE_FORMAT_URL;
     public static HttpHeaders RESPONSE_HEADER = new HttpHeaders();
 

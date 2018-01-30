@@ -1,8 +1,8 @@
-package com.abcft.report.service;
+package com.peng.certrecognition.service;
 
-import com.abcft.report.configuration.Constants;
-import com.abcft.report.domain.User;
-import com.abcft.report.domain.UserRepository;
+import com.peng.certrecognition.configuration.Constants;
+import com.peng.certrecognition.domain.User;
+import com.peng.certrecognition.repository.UserRepository;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,32 +12,36 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService extends BaseService {
 
     @Autowired
-    public UserRepository userRepository;
+    private UserRepository userRepository;
 
-    @Autowired
-    ReportService ownCloudService;
-
-    public User getUserByEmail(String userEmail) {
-        return userRepository.findUserByEmail(userEmail);
-    }
-
-    public User getUserById(String userId) {
-        return userRepository.findUserById(userId);
+    public User getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 
     public User getUserByEmailAndPassword(String email, String password) {
         User user = userRepository.findUserByEmail(email);
-        if (user != null && user.isActive() && user.isValidPassword(password)) {
+        if (user != null && user.isActive() && user.getPassword().equals(password)) {
             return user;
         }
         return null;
+    }
+
+    public User createUser(String email, String password) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        userRepository.save(user);
+        return user;
+    }
+
+    public User getUserById(String userId) {
+        return userRepository.findUserById(userId);
     }
 
     public User getUserByCookie() {
@@ -46,15 +50,6 @@ public class UserService extends BaseService {
             return getUserById(userId);
         }
         return null;
-    }
-
-    public User createUser(String email, String password) {
-        User user = new User(email);
-        user.setPassword(password);
-        user.setOwnCloudPassword(UUID.randomUUID().toString());
-        userRepository.refreshOwnCloudToken(user);
-        userRepository.save(user);
-        return user;
     }
 
     public String genToken(User user) {
@@ -96,8 +91,4 @@ public class UserService extends BaseService {
         }
     }
 
-    public boolean isValidOwnCloudUser(String email, String password) {
-        User user = userRepository.findUserByEmail(email);
-        return user.isActive() && user.isValidOwnCloudPassword(password);
-    }
 }
