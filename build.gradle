@@ -1,14 +1,37 @@
-group 'com.peng.certrecognition'
-version '1.0-SNAPSHOT'
+buildscript {
+    ext {
+        springBootVersion = '1.5.8.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
 
+group 'com.peng.certrecognition'
+version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
+jar {
+    baseName = 'CertificationRecognition_backend'
+}
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    compile 'org.springframework.security:spring-security-web:5.0.0.RELEASE'
+    compile 'org.springframework.security:spring-security-config:5.0.0.RELEASE'
+    compile "org.springframework.boot:spring-boot-starter-data-redis"
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.44'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }

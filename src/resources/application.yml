@@ -1,0 +1,28 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://10.12.7.7:27017/certRecognition
+  redis:
+    host: 10.12.7.7
+    port: 6379
+    timeout: 0
+    database: 1
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 8
+      min-idle: 0
+
+server:
+  port: 8089
+
+logging:
+  file: logs/CertificationRecognition_backend.log
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web: ERROR
+  pattern:
+    file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
+    console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
