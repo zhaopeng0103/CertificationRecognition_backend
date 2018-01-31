@@ -21,13 +21,14 @@ public class BaseController {
     @Autowired
     private UserService userService;
 
-    ResponseEntity<?> response(Object response, HttpStatus httpStatus) {
+    private ResponseEntity<?> response(Object response, HttpStatus httpStatus) {
         return new ResponseEntity<>(response, httpStatus);
     }
 
-    ResponseEntity<?> responseSuccess(Map<String, Object> data) {
+    ResponseEntity<?> responseSuccess(Map<String, Object> data, String message) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
+        response.put("message", message);
         response.put("data", data);
         return response(response, HttpStatus.OK);
     }
@@ -39,22 +40,20 @@ public class BaseController {
         return response(response, HttpStatus.OK);
     }
 
-    ResponseEntity<?> responseSuccess() {
+    ResponseEntity<?> responseSuccess(String message) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
+        response.put("message", message);
         return response(response, HttpStatus.OK);
     }
 
-    ResponseEntity<?> responseSuccess(List<?> data) {
+    ResponseEntity<?> responseSuccess(List<?> data, String message) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
+        response.put("message", message);
         response.put("data", data);
         response.put("total", data.size());
         return response(response, HttpStatus.OK);
-    }
-
-    ResponseEntity<?> responseSuccess(InputStreamResource inputStreamResource, HttpHeaders httpHeaders) {
-        return new ResponseEntity<>(inputStreamResource, httpHeaders, HttpStatus.OK);
     }
 
     User getCurrentUser() {
