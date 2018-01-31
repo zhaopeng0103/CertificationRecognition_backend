@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public final class Constants {
 
     public static final String TOKEN_PREFIX = "CertificationRecognition_backend:token:";
-    public static String IMAGE_FORMAT_URL;
+    public static String PHOTO_PATH;
     public static HttpHeaders RESPONSE_HEADER = new HttpHeaders();
 
     static {
@@ -19,9 +19,9 @@ public final class Constants {
         RESPONSE_HEADER.add("Content-Type", "application/json");
     }
 
-    @Value("${imageformat.url}")
-    public void setImageFormatUrl(String imageFormatUrl){
-        IMAGE_FORMAT_URL = imageFormatUrl;
+    @Value("${photo.path}")
+    public void setPhotoPath(String photoPath){
+        PHOTO_PATH = photoPath;
     }
 
 }

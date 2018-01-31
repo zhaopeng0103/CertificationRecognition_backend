@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepositoryImpl implements UserRepositoryCustom {
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 

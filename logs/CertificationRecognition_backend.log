@@ -1,0 +1,26 @@
+2018-一月-31 21:31:48.548 INFO  [main] c.p.c.Application - Starting Application on pzhao-OptiPlex-790 with PID 5639 (/home/pzhao/WorkSpace/CertificationRecognition_backend/out/production/classes started by pzhao in /home/pzhao/WorkSpace/CertificationRecognition_backend)
+2018-一月-31 21:31:48.552 INFO  [main] c.p.c.Application - No active profile set, falling back to default profiles: default
+2018-一月-31 21:31:48.639 INFO  [main] o.s.b.c.e.AnnotationConfigEmbeddedWebApplicationContext - Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@1b266842: startup date [Wed Jan 31 21:31:48 CST 2018]; root of context hierarchy
+2018-一月-31 21:31:49.546 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2018-一月-31 21:31:49.595 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2018-一月-31 21:31:49.614 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.peng.certrecognition.repository.PhotoRepository.
+2018-一月-31 21:31:49.616 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.peng.certrecognition.repository.UserRepository.
+2018-一月-31 21:31:50.417 INFO  [main] o.s.b.c.e.t.TomcatEmbeddedServletContainer - Tomcat initialized with port(s): 8089 (http)
+2018-一月-31 21:31:50.435 INFO  [main] o.a.c.c.StandardService - Starting service [Tomcat]
+2018-一月-31 21:31:50.436 INFO  [main] o.a.c.c.StandardEngine - Starting Servlet Engine: Apache Tomcat/8.5.23
+2018-一月-31 21:31:50.573 INFO  [localhost-startStop-1] o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext
+2018-一月-31 21:31:50.757 INFO  [localhost-startStop-1] o.s.b.w.s.ServletRegistrationBean - Mapping servlet: 'dispatcherServlet' to [/]
+2018-一月-31 21:31:50.764 INFO  [localhost-startStop-1] o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-一月-31 21:31:50.766 INFO  [localhost-startStop-1] o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-一月-31 21:31:50.771 INFO  [localhost-startStop-1] o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-一月-31 21:31:50.773 INFO  [localhost-startStop-1] o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'requestContextFilter' to: [/*]
+2018-一月-31 21:31:51.526 INFO  [main] o.m.d.cluster - Cluster created with settings {hosts=[127.0.0.1:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-一月-31 21:31:51.619 INFO  [cluster-ClusterId{value='5a71c547a0a31a1607ae7159', description='null'}-127.0.0.1:27017] o.m.d.connection - Opened connection [connectionId{localValue:1, serverValue:13}] to 127.0.0.1:27017
+2018-一月-31 21:31:51.622 INFO  [cluster-ClusterId{value='5a71c547a0a31a1607ae7159', description='null'}-127.0.0.1:27017] o.m.d.cluster - Monitor thread successfully connected to server with description ServerDescription{address=127.0.0.1:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[2, 6, 10]}, minWireVersion=0, maxWireVersion=2, maxDocumentSize=16777216, roundTripTimeNanos=993685}
+2018-一月-31 21:31:51.885 INFO  [main] o.m.d.connection - Opened connection [connectionId{localValue:2, serverValue:14}] to 127.0.0.1:27017
+2018-一月-31 21:31:53.162 INFO  [main] o.s.j.e.a.AnnotationMBeanExporter - Registering beans for JMX exposure on startup
+2018-一月-31 21:31:53.240 INFO  [main] o.s.b.c.e.t.TomcatEmbeddedServletContainer - Tomcat started on port(s): 8089 (http)
+2018-一月-31 21:31:53.246 INFO  [main] c.p.c.Application - Started Application in 5.531 seconds (JVM running for 6.182)
+2018-一月-31 21:32:19.246 INFO  [Thread-5] o.s.b.c.e.AnnotationConfigEmbeddedWebApplicationContext - Closing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@1b266842: startup date [Wed Jan 31 21:31:48 CST 2018]; root of context hierarchy
+2018-一月-31 21:32:19.249 INFO  [Thread-5] o.s.j.e.a.AnnotationMBeanExporter - Unregistering JMX-exposed beans on shutdown
+2018-一月-31 21:32:19.256 INFO  [Thread-5] o.m.d.connection - Closed connection [connectionId{localValue:2, serverValue:14}] to 127.0.0.1:27017 because the pool has been closed.
