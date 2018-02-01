@@ -24,8 +24,8 @@ logging:
         security: DEBUG
         web: ERROR
   pattern:
-    file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
-    console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
+    file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{15}) - %highlight(%msg) %n'
+    console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{15}) - %highlight(%msg) %n'
 
 photo:
   path: F:/CertificationRecognition_backend/photo/
