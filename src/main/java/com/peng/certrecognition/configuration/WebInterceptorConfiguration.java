@@ -10,8 +10,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class WebInterceptorConfiguration extends WebMvcConfigurerAdapter {
 
     private String[] excludePathPatterns = new String[]{
-            "/login",
-            "/register",
+            "/user/login",
+            "/user/register",
     };
 
     @Bean
