@@ -1,6 +1,5 @@
 package com.peng.certrecognition.controller;
 
-import com.peng.certrecognition.configuration.Constants;
 import com.peng.certrecognition.domain.Photo;
 import com.peng.certrecognition.service.PhotoService;
 import com.peng.certrecognition.util.UUIDUtils;
