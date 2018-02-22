@@ -62,11 +62,26 @@ public class UserService extends BaseService {
     /**
      * 修改用户信息
      * @param user
-     * @param email
+     * @param key
+     * @param value
      * @return
      */
-    public User updateUser(User user, String email) {
-        user.setEmail(email);
+    public User updateUser(User user, String key, String value) {
+        if (key.equals(Constants.USER_KEY_USERNAME)) {
+            user.setUsername(value);
+        }
+        if (key.equals(Constants.USER_KEY_EMAIL)) {
+            user.setEmail(value);
+        }
+        if (key.equals(Constants.USER_KEY_PASSWORD)) {
+            user.setPassword(value);
+        }
+        if (key.equals(Constants.USER_KEY_PHONE)) {
+            user.setPhone(value);
+        }
+        if (key.equals(Constants.USER_KEY_SEX)) {
+            user.setSex(value);
+        }
         user.setUpdateTime(new Date());
         return userRepository.save(user);
     }

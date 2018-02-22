@@ -7,6 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public final class Constants {
 
+    public static final String USER_KEY_USERNAME = "username";
+    public static final String USER_KEY_EMAIL = "email";
+    public static final String USER_KEY_PASSWORD = "password";
+    public static final String USER_KEY_PHONE = "phone";
+    public static final String USER_KEY_SEX = "sex";
+
     public static final String TOKEN_PREFIX = "CertificationRecognition_backend:token:";
     public static String PHOTO_PATH;
     public static HttpHeaders RESPONSE_HEADER = new HttpHeaders();

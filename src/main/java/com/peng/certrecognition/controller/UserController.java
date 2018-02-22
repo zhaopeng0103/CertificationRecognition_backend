@@ -85,13 +85,18 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/user/update", method = RequestMethod.POST)
-    public ResponseEntity<?> update(@RequestParam("email") String email) {
+    public ResponseEntity<?> update(@RequestParam("key") String key, @RequestParam("value") String value) {
         User user = getCurrentUser();
         if (user != null) {
-            userService.updateUser(user, email);
+            user = userService.updateUser(user, key, value);
             Map<String, Object> data = new HashMap<>();
             data.put("userid", user.getId());
             data.put("email", user.getEmail());
+            data.put("username", user.getUsername());
+            data.put("avatar", user.getAvatar());
+            data.put("phone", user.getPhone());
+            data.put("sex", user.getSex());
+            data.put("update_time", user.getUpdateTime());
             logger.info("UserController::userUpdate:finished:{}", data);
             return responseSuccess(data, "修改成功！");
         } else {
