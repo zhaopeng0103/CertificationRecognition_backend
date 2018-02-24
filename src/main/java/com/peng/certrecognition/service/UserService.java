@@ -82,6 +82,9 @@ public class UserService extends BaseService {
         if (key.equals(Constants.USER_KEY_SEX)) {
             user.setSex(value);
         }
+        if (key.equals(Constants.USER_KEY_AVATAR)) {
+            user.setAvatar(value);
+        }
         user.setUpdateTime(new Date());
         return userRepository.save(user);
     }

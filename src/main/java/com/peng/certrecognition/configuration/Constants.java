@@ -12,6 +12,7 @@ public final class Constants {
     public static final String USER_KEY_PASSWORD = "password";
     public static final String USER_KEY_PHONE = "phone";
     public static final String USER_KEY_SEX = "sex";
+    public static final String USER_KEY_AVATAR = "avatar";
 
     public static final String TOKEN_PREFIX = "CertificationRecognition_backend:token:";
     public static String PHOTO_PATH;

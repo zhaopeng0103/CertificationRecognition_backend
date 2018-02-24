@@ -1,13 +1,22 @@
 package com.peng.certrecognition.controller;
 
+import com.peng.certrecognition.configuration.Constants;
+import com.peng.certrecognition.domain.Photo;
 import com.peng.certrecognition.domain.User;
 import com.peng.certrecognition.service.UserService;
 import com.peng.certrecognition.util.DateUtils;
+import com.peng.certrecognition.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
@@ -103,6 +112,31 @@ public class UserController extends BaseController {
             logger.info("UserController::userUpdate:failed:{}", "用户不存在！");
             return responseError("用户不存在！");
         }
+    }
+
+    @RequestMapping(value = "/user/head", method = RequestMethod.POST)
+    public ResponseEntity<?> head(HttpServletRequest request) {
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("files");
+        MultipartFile file = files.get(0);
+        User user = getCurrentUser();
+        if (!file.isEmpty()) {
+            String originalFileName = file.getOriginalFilename();
+                String type = originalFileName.substring(originalFileName.lastIndexOf("."));
+                String newFileName = UUIDUtils.genUUID() + type;
+                File localPath = new File(request.getServletContext().getRealPath("//head//") + newFileName);
+                if (!localPath.exists()) {
+                    localPath.mkdirs();
+                }
+                try {
+                    file.transferTo(localPath);
+                    user = userService.updateUser(user, Constants.USER_KEY_AVATAR, localPath.getPath());
+                    logger.info("UserController::userHead:finished:{}", originalFileName);
+                } catch (IOException e) {
+                    logger.error("UserController::userHead:failed:{}", originalFileName);
+                    e.printStackTrace();
+                }
+        }
+        return responseSuccess(user.toMap(), "图片上传完成");
     }
 
 }

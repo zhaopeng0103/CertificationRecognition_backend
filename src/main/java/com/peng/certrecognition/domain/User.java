@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Document(collection = "user")
 public class User {
@@ -153,5 +155,20 @@ public class User {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("username", username);
+        map.put("avatar", avatar);
+        map.put("email", email);
+        map.put("password", password);
+        map.put("phone", phone);
+        map.put("sex", sex);
+        map.put("active", active);
+        map.put("createTime", createTime);
+        map.put("updateTime", updateTime);
+        return map;
     }
 }
