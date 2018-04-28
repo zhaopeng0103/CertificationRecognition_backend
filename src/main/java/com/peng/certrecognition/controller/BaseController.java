@@ -23,34 +23,38 @@ public class BaseController {
         return new ResponseEntity<>(response, httpStatus);
     }
 
-    ResponseEntity<?> responseSuccess(Map<String, Object> data, String message) {
+    ResponseEntity<?> responseSuccess(String method, Map<String, Object> data, String message) {
         Map<String, Object> response = new HashMap<>();
+        response.put("method", method);
         response.put("success", true);
         response.put("message", message);
         response.put("data", data);
         return response(response, HttpStatus.OK);
     }
 
-    ResponseEntity<?> responseError(String message) {
+    ResponseEntity<?> responseError(String method, String message) {
         Map<String, Object> response = new HashMap<>();
+        response.put("method", method);
         response.put("success", false);
         response.put("message", message);
         return response(response, HttpStatus.OK);
     }
 
-    ResponseEntity<?> responseSuccess(String message) {
+    ResponseEntity<?> responseSuccess(String method, String message) {
         Map<String, Object> response = new HashMap<>();
+        response.put("method", method);
         response.put("success", true);
         response.put("message", message);
         return response(response, HttpStatus.OK);
     }
 
-    ResponseEntity<?> responseSuccess(List<?> data, String message) {
+    ResponseEntity<?> responseSuccess(String method, List<?> data, String message) {
         Map<String, Object> response = new HashMap<>();
+        response.put("method", method);
         response.put("success", true);
         response.put("message", message);
         response.put("data", data);
-        response.put("total", data.size());
+        response.put("sizes", data.size());
         return response(response, HttpStatus.OK);
     }
 

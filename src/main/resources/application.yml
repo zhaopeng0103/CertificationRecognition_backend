@@ -12,6 +12,10 @@ spring:
       max-wait: -1
       max-idle: 8
       min-idle: 0
+  http:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 200Mb
 
 server:
   port: 8089
@@ -27,6 +31,11 @@ logging:
     file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{15}) - %highlight(%msg) %n'
     console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{15}) - %highlight(%msg) %n'
 
+head:
+  path: F:/CertificationRecognition_backend/head/
+
 photo:
   path: F:/CertificationRecognition_backend/photo/
 
+python:
+  path: D:/360Downloads/pythonWorkplace/CertificationRecognition_recognition/Application.py

@@ -1,7 +1,12 @@
 package com.peng.certrecognition.controller;
 
+import com.peng.certrecognition.configuration.Constants;
 import com.peng.certrecognition.domain.Photo;
+import com.peng.certrecognition.domain.Recognition;
+import com.peng.certrecognition.domain.User;
 import com.peng.certrecognition.service.PhotoService;
+import com.peng.certrecognition.service.RecognitionService;
+import com.peng.certrecognition.util.PythonUtils;
 import com.peng.certrecognition.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -10,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,44 +32,69 @@ public class PhotoController extends BaseController {
     @Autowired
     private PhotoService photoService;
 
+    @Autowired
+    private RecognitionService recognitionService;
+
     @RequestMapping(value = "/photo/upload", method = RequestMethod.POST)
-    public ResponseEntity<?> upload(HttpServletRequest request) {
-        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("files");
-        List<Map<String, Object>> photoList = new ArrayList<>();
-        for (MultipartFile file : files) {
-            if (!file.isEmpty()) {
-                String originalFileName = file.getOriginalFilename();
-                String type = originalFileName.substring(originalFileName.lastIndexOf("."));
-                String newFileName = UUIDUtils.genUUID() + type;
-                File localPath = new File(request.getServletContext().getRealPath("//photos//") + newFileName);
-                if (!localPath.exists()) {
-                    localPath.mkdirs();
-                }
-                try {
-                    file.transferTo(localPath);
-                    Photo photo = photoService.addPhoto(getCurrentUser(), file, newFileName, type, localPath.getPath());
-                    photoList.add(photo.toMap());
-                    logger.info("PhotoController::photoUpload:finished:{}", originalFileName);
-                } catch (IOException e) {
-                    logger.error("PhotoController::photoUpload:failed:{}", originalFileName);
-                    e.printStackTrace();
-                }
+    public ResponseEntity<?> photoUpload(@RequestParam(value = "file") MultipartFile file) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        User user = getCurrentUser();
+        if (user != null) {
+            if (file.isEmpty()) {
+                logger.info("PhotoController::photoUpload:failed:{}", "图片不存在！");
+                return responseError(methodName, "图片不存在！");
             }
+            String originalFileName = file.getOriginalFilename();
+            String type = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String newFileName = String.format("%s%s", UUIDUtils.genUUID(), type);
+            File dest = new File(Constants.PHOTO_PATH.concat(user.getEmail()).concat(File.separator), newFileName);
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
+                Photo photo = photoService.addPhoto(user, file, newFileName, type, dest.getPath());
+                Map<String, Object> data = photo.toMapFromUpload();
+                logger.info("PhotoController::photoUpload:success:{}", data);
+                return responseSuccess(methodName, data, "图片上传完成");
+            } catch (IOException e) {
+                logger.error("PhotoController::photoUpload:failed:{}", "图片上传失败！", e.getMessage());
+                return responseError(methodName, "图片上传失败！");
+            }
+        } else {
+            logger.info("PhotoController::photoUpload:failed:{}", "用户不存在！");
+            return responseError(methodName, "用户不存在！");
         }
-        return responseSuccess(photoList, "图片上传完成");
     }
 
-    @RequestMapping(value = "/photo/download", method = RequestMethod.GET)
-    public ResponseEntity<?> download(@RequestParam("photoId") String photoId) {
+    @RequestMapping(value = "/photo/list", method = RequestMethod.GET)
+    public ResponseEntity<?> photoList() {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         try {
-            Photo photo = photoService.getPhoto(photoId);
+            List<Map<String, Object>> data = new ArrayList<>();
+            for (Photo photo : photoService.getPhotoList(getCurrentUser())) {
+                data.add(photo.toMapFromList());
+            }
+            logger.info("PhotoController::photoList:finished:{}", data.size());
+            return responseSuccess(methodName, data, "获取成功！");
+        } catch (Exception e) {
+            logger.error("PhotoController::photoList:failed: {}", e.getMessage());
+            return responseError(methodName, "获取图片列表失败！");
+        }
+    }
+
+    @RequestMapping(value = "/photo/download/{photoName}", method = RequestMethod.GET)
+    public ResponseEntity<?> photoDownload(@PathVariable("photoName") String photoName) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        try {
+            Photo photo = photoService.getPhotoByName(photoName.concat(".jpg"));
             InputStream inputStream = new FileInputStream(new File(photo.getPath()));
             InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
 
             HttpHeaders respHeaders = new HttpHeaders();
-            respHeaders.setContentDispositionFormData("attachment", photo.getOriginalname());
+            respHeaders.setContentDispositionFormData("attachment", photo.getFilename());
 
-            logger.info("PhotoController::photoDownload:finished:{}", inputStreamResource);
+            logger.info("PhotoController::photoDownload:finished:{}", photo.getFilename());
             return new ResponseEntity<>(inputStreamResource, respHeaders, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("PhotoController::photoDownload:failed:{}", e.getMessage());
@@ -74,46 +102,62 @@ public class PhotoController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/photo/delete", method = RequestMethod.POST)
-    public ResponseEntity<?> delete(@RequestParam("photoId") String photoId) {
+    @RequestMapping(value = "/photo/view/{photoName}", method = RequestMethod.GET)
+    public ResponseEntity<?> photoView(@PathVariable("photoName") String photoName) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         try {
-            photoService.deletePhoto(photoId);
-            Map<String, Object> data = new HashMap<>();
-            data.put("photoId", photoId);
-            logger.info("PhotoController::photoDelete:finished:{}", data);
-            return responseSuccess(data, "删除成功！");
-        } catch (Exception e) {
-            logger.error("PhotoController::photoDelete:failed:{} --> {}", photoId, e.getMessage());
-            return responseError("删除失败！");
-        }
-    }
-
-    @RequestMapping(value = "/photo/list", method = RequestMethod.POST)
-    public ResponseEntity<?> list() {
-        try {
-            List<Map<String, Object>> data = new ArrayList<>();
-            for (Photo photo : photoService.getPhotoList(getCurrentUser())) {
-                data.add(photo.toMap());
-            }
-            logger.info("PhotoController::photoList:finished:{}", data);
-            return responseSuccess(data, "获取成功！");
-        } catch (Exception e) {
-            logger.error("PhotoController::photoList:failed: {}", e.getMessage());
-            return responseError("获取图片列表失败！");
-        }
-    }
-
-    @RequestMapping(value = "/photo/view", method = RequestMethod.POST)
-    public ResponseEntity<?> view(@RequestParam("photoId") String photoId) {
-        try {
-            Photo photo = photoService.getPhoto(photoId);
-            logger.info("PhotoController::photoView:finished:{}", photo);
-            return responseSuccess(photo.toMap(), "获取成功！");
+            Photo photo = photoService.getPhotoByName(photoName.concat(".jpg"));
+            Map<String, Object> data = photo.toMapFromView();
+            logger.info("PhotoController::photoView:finished:{}", data);
+            return responseSuccess(methodName, data, "获取成功！");
         } catch (Exception e) {
             logger.error("PhotoController::photoView:failed: {}", e.getMessage());
-            return responseError("获取图片失败！");
+            return responseError(methodName, "获取图片失败！");
         }
     }
 
+    @RequestMapping(value = "/photo/delete", method = RequestMethod.POST)
+    public ResponseEntity<?> photoDelete(@RequestParam("photoName") String photoName) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        try {
+            photoService.deletePhotoByName(photoName);
+            Map<String, Object> data = new HashMap<>();
+            data.put("photoName", photoName);
+            logger.info("PhotoController::photoDelete:finished:{}", data);
+            return responseSuccess(methodName, data, "删除成功！");
+        } catch (Exception e) {
+            logger.error("PhotoController::photoDelete:failed:{} --> {}", photoName, e.getMessage());
+            return responseError(methodName, "删除失败！");
+        }
+    }
+
+    @RequestMapping(value = "/photo/recognition", method = RequestMethod.POST)
+    public ResponseEntity<?> photoRecognition(@RequestParam("photoName") String photoName) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        User user = getCurrentUser();
+        if (user != null) {
+            try {
+                photoName = "3bed7f2457d548699293f83c7609c122.png";
+                String photo_path = Constants.PHOTO_PATH.concat(user.getEmail()).concat(File.separator);
+                String recognitionRes = PythonUtils.execPythonFile(Constants.PYTHON_PATH, photo_path, photoName);
+//                String recognitionRes = "1";
+                if (recognitionRes.equals("1")) {
+                    Recognition recognition = recognitionService.getRecognitionByName(photoName);
+                    Map<String, Object> data = recognition.toMap();
+                    logger.info("PhotoController::photoRecognition:finished:{}", data);
+                    return responseSuccess(methodName, data, "识别成功！");
+                }else {
+                    logger.error("PhotoController::photoRecognition:failed:{} --> {}", photoName);
+                    return responseError(methodName, "识别失败！");
+                }
+            } catch (Exception e) {
+                logger.error("PhotoController::photoRecognition:failed:{} --> {}", photoName, e.getMessage());
+                return responseError(methodName, "识别出错！");
+            }
+        } else {
+            logger.info("PhotoController::photoRecognition:failed:{}", "用户不存在！");
+            return responseError(methodName, "用户不存在！");
+        }
+    }
 
 }

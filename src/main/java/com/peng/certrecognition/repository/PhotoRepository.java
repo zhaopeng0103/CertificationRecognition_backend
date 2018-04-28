@@ -5,12 +5,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface PhotoRepository extends MongoRepository<Photo, String>, PhotoRepositoryCustom{
+public interface PhotoRepository extends MongoRepository<Photo, String>, PhotoRepositoryCustom {
 
-    Photo findById(String id);
+    Photo findByFilename(String filename);
 
     List<Photo> findByUserid(String userid);
 
-    void deleteById(String id);
+    void deleteByFilename(String filename);
 
 }

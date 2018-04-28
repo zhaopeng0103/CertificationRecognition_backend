@@ -18,21 +18,22 @@ public class PhotoService extends BaseService {
 
     /**
      * 上传图片
-     * @param user
-     * @param file
-     * @param newFileName
-     * @param type
-     * @param localPath
-     * @return
+     *
+     * @param user 用户
+     * @param file 文件
+     * @param newFileName 新文件名
+     * @param type 类型
+     * @param path 路径
+     * @return Photo
      */
-    public Photo addPhoto(User user, MultipartFile file, String newFileName, String type, String localPath) {
+    public Photo addPhoto(User user, MultipartFile file, String newFileName, String type, String path) {
         Photo photo = new Photo();
         photo.setUserid(user.getId());
         photo.setOriginalname(file.getOriginalFilename());
         photo.setSize(file.getSize());
         photo.setFilename(newFileName);
         photo.setType(type);
-        photo.setPath(localPath);
+        photo.setPath(path);
         photo.setLabel(null);
         photo.setCreateTime(new Date());
         return photoRepository.save(photo);
@@ -40,8 +41,9 @@ public class PhotoService extends BaseService {
 
     /**
      * 获得图片列表
-     * @param user
-     * @return
+     *
+     * @param user 用户
+     * @return List
      */
     public List<Photo> getPhotoList(User user) {
         return photoRepository.findByUserid(user.getId());
@@ -49,19 +51,21 @@ public class PhotoService extends BaseService {
 
     /**
      * 获得单个图片
-     * @param photoId
-     * @return
+     *
+     * @param photoName 图片名
+     * @return Photo
      */
-    public Photo getPhoto(String photoId) {
-        return photoRepository.findById(photoId);
+    public Photo getPhotoByName(String photoName) {
+        return photoRepository.findByFilename(photoName);
     }
 
     /**
      * 删除单张图片
-     * @param photoId
+     *
+     * @param photoName 图片名
      */
-    public void deletePhoto(String photoId) {
-        photoRepository.deleteById(photoId);
+    public void deletePhotoByName(String photoName) {
+        photoRepository.deleteByFilename(photoName);
     }
 
 }

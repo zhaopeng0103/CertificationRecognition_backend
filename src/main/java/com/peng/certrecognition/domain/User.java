@@ -1,5 +1,6 @@
 package com.peng.certrecognition.domain;
 
+import com.peng.certrecognition.util.DateUtils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -8,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Document(collection = "user")
 public class User {
@@ -34,6 +37,9 @@ public class User {
     @Field("sex")
     private String sex;
 
+    @Field("birthday")
+    private String birthday;
+
     @Field("active")
     private boolean active;
 
@@ -45,15 +51,17 @@ public class User {
     @LastModifiedDate
     private Date updateTime;
 
-    public User() { }
+    public User() {
+    }
 
-    public User(String username, String avatar, String email, String password, String phone, String sex, boolean active, Date createTime, Date updateTime) {
+    public User(String username, String avatar, String email, String password, String phone, String sex, String birthday, boolean active, Date createTime, Date updateTime) {
         this.username = username;
         this.avatar = avatar;
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.sex = sex;
+        this.birthday = birthday;
         this.active = true;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -115,6 +123,14 @@ public class User {
         this.sex = sex;
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -154,4 +170,40 @@ public class User {
                 ", updateTime=" + updateTime +
                 '}';
     }
+
+    public Map<String, Object> toMapFromRegister() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", id);
+        map.put("username", username);
+        map.put("email", email);
+        map.put("create_time", DateUtils.getTransformDate(createTime));
+        return map;
+    }
+
+    public Map<String, Object> toMapFromInfo() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", id);
+        map.put("username", username);
+        map.put("avatar", avatar);
+        map.put("email", email);
+        map.put("phone", phone);
+        map.put("sex", sex);
+        map.put("birthday", birthday);
+        map.put("create_time", DateUtils.getTransformDate(createTime));
+        return map;
+    }
+
+    public Map<String, Object> toMapFromUpdate() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", id);
+        map.put("email", email);
+        map.put("username", username);
+        map.put("avatar", avatar);
+        map.put("phone", phone);
+        map.put("sex", sex);
+        map.put("birthday", birthday);
+        map.put("update_time", DateUtils.getTransformDate(updateTime));
+        return map;
+    }
+
 }

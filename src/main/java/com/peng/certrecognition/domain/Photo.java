@@ -156,7 +156,20 @@ public class Photo {
                 '}';
     }
 
-    public Map<String, Object> toMap() {
+    public Map<String, Object> toMapFromUpload() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("filename", filename);
+        return map;
+    }
+
+    public Map<String, Object> toMapFromList() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("filename", filename);
+        map.put("createTime", createTime);
+        return map;
+    }
+
+    public Map<String, Object> toMapFromView() {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("userid", userid);
@@ -165,6 +178,15 @@ public class Photo {
         map.put("size", size);
         map.put("type", type);
         map.put("path", path);
+        map.put("label", label);
+        map.put("createTime", createTime);
+        return map;
+    }
+
+    public Map<String, Object> toMapFromRecognition() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("originalname", originalname);
+        map.put("filename", filename);
         map.put("label", label);
         map.put("createTime", createTime);
         return map;
