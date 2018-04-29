@@ -46,7 +46,7 @@ public class PhotoController extends BaseController {
             }
             String originalFileName = file.getOriginalFilename();
             String type = originalFileName.substring(originalFileName.lastIndexOf("."));
-            String newFileName = String.format("%s%s", UUIDUtils.genUUID(), type);
+            String newFileName = String.format("%s%s", UUIDUtils.genUUID(), ".jpg");
             File dest = new File(Constants.PHOTO_PATH.concat(user.getEmail()).concat(File.separator), newFileName);
             if (!dest.getParentFile().exists()) {
                 dest.getParentFile().mkdirs();
@@ -102,32 +102,43 @@ public class PhotoController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/photo/view/{photoName}", method = RequestMethod.GET)
-    public ResponseEntity<?> photoView(@PathVariable("photoName") String photoName) {
+    @RequestMapping(value = "/photo/view", method = RequestMethod.POST)
+    public ResponseEntity<?> photoView(@RequestParam("photoName") String photoName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         try {
-            Photo photo = photoService.getPhotoByName(photoName.concat(".jpg"));
-            Map<String, Object> data = photo.toMapFromView();
+            Recognition recognition = recognitionService.getRecognitionByName(photoName);
+            Map<String, Object> data = recognition.toMap();
             logger.info("PhotoController::photoView:finished:{}", data);
-            return responseSuccess(methodName, data, "获取成功！");
+            return responseSuccess(methodName, data, "获取结果成功！");
         } catch (Exception e) {
             logger.error("PhotoController::photoView:failed: {}", e.getMessage());
-            return responseError(methodName, "获取图片失败！");
+            return responseError(methodName, "获取结果失败！");
         }
     }
 
     @RequestMapping(value = "/photo/delete", method = RequestMethod.POST)
     public ResponseEntity<?> photoDelete(@RequestParam("photoName") String photoName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        try {
-            photoService.deletePhotoByName(photoName);
-            Map<String, Object> data = new HashMap<>();
-            data.put("photoName", photoName);
-            logger.info("PhotoController::photoDelete:finished:{}", data);
-            return responseSuccess(methodName, data, "删除成功！");
-        } catch (Exception e) {
-            logger.error("PhotoController::photoDelete:failed:{} --> {}", photoName, e.getMessage());
-            return responseError(methodName, "删除失败！");
+        User user = getCurrentUser();
+        if (user != null) {
+            try {
+                photoService.deletePhotoByName(photoName);
+                recognitionService.deleteRecognitionByName(photoName);
+                File file = new File(Constants.PHOTO_PATH.concat(user.getEmail()).concat(File.separator), photoName);
+                if (file.exists()) {
+                    boolean result = file.delete();
+                }
+                Map<String, Object> data = new HashMap<>();
+                data.put("photoName", photoName);
+                logger.info("PhotoController::photoDelete:finished:{}", data);
+                return responseSuccess(methodName, data, "删除成功！");
+            } catch (Exception e) {
+                logger.error("PhotoController::photoDelete:failed:{} --> {}", photoName, e.getMessage());
+                return responseError(methodName, "删除失败！");
+            }
+        } else {
+            logger.info("PhotoController::photoRecognition:failed:{}", "用户不存在！");
+            return responseError(methodName, "用户不存在！");
         }
     }
 
@@ -137,10 +148,9 @@ public class PhotoController extends BaseController {
         User user = getCurrentUser();
         if (user != null) {
             try {
-                photoName = "3bed7f2457d548699293f83c7609c122.png";
+                // photoName = "3bed7f2457d548699293f83c7609c122.png";
                 String photo_path = Constants.PHOTO_PATH.concat(user.getEmail()).concat(File.separator);
                 String recognitionRes = PythonUtils.execPythonFile(Constants.PYTHON_PATH, photo_path, photoName);
-//                String recognitionRes = "1";
                 if (recognitionRes.equals("1")) {
                     Recognition recognition = recognitionService.getRecognitionByName(photoName);
                     Map<String, Object> data = recognition.toMap();

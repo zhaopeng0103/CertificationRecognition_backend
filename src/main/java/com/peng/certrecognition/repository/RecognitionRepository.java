@@ -7,4 +7,6 @@ public interface RecognitionRepository extends MongoRepository<Recognition, Stri
 
     Recognition findByFilename(String filename);
 
+    void deleteByFilename(String filename);
+
 }

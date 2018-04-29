@@ -21,4 +21,13 @@ public class RecognitionService extends BaseService {
         return recognitionRepository.findByFilename(photoName);
     }
 
+    /**
+     * 删除识别结果
+     *
+     * @param photoName 图片名
+     */
+    public void deleteRecognitionByName(String photoName) {
+        recognitionRepository.deleteByFilename(photoName);
+    }
+
 }
