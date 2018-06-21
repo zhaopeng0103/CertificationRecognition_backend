@@ -29,10 +29,11 @@ jar {
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}"
     compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    compile 'org.springframework.security:spring-security-web:5.0.0.RELEASE'
-    compile 'org.springframework.security:spring-security-config:5.0.0.RELEASE'
+    compile "org.springframework.security:spring-security-web:5.0.0.RELEASE"
+    compile "org.springframework.security:spring-security-config:5.0.0.RELEASE"
     compile "org.springframework.boot:spring-boot-starter-data-redis"
-    compile "com.alibaba:fastjson:1.2.44"
     compile "commons-codec:commons-codec:1.10"
+    compile "com.baidu.aip:java-sdk:4.3.2"
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

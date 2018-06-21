@@ -9,6 +9,4 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
-
 }

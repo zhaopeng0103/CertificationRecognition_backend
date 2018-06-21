@@ -4,7 +4,6 @@ import com.peng.certrecognition.configuration.Constants;
 import com.peng.certrecognition.domain.User;
 import com.peng.certrecognition.service.UserService;
 import com.peng.certrecognition.util.DateUtils;
-import com.peng.certrecognition.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @CrossOrigin

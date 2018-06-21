@@ -4,6 +4,8 @@ import com.peng.certrecognition.configuration.Constants;
 import com.peng.certrecognition.domain.Photo;
 import com.peng.certrecognition.domain.Recognition;
 import com.peng.certrecognition.domain.User;
+import com.peng.certrecognition.ocr.HorizontalCorrection;
+import com.peng.certrecognition.ocr.Segmentation;
 import com.peng.certrecognition.service.PhotoService;
 import com.peng.certrecognition.service.RecognitionService;
 import com.peng.certrecognition.util.PythonUtils;
@@ -148,7 +150,6 @@ public class PhotoController extends BaseController {
         User user = getCurrentUser();
         if (user != null) {
             try {
-                // photoName = "3bed7f2457d548699293f83c7609c122.png";
                 String photo_path = Constants.PHOTO_PATH.concat(user.getEmail()).concat(File.separator);
                 String recognitionRes = PythonUtils.execPythonFile(Constants.PYTHON_PATH, photo_path, photoName);
                 if (recognitionRes.equals("1")) {
@@ -156,9 +157,38 @@ public class PhotoController extends BaseController {
                     Map<String, Object> data = recognition.toMap();
                     logger.info("PhotoController::photoRecognition:finished:{}", data);
                     return responseSuccess(methodName, data, "识别成功！");
-                }else {
+                } else {
                     logger.error("PhotoController::photoRecognition:failed:{} --> {}", photoName);
                     return responseError(methodName, "识别失败！");
+                }
+            } catch (Exception e) {
+                logger.error("PhotoController::photoRecognition:failed:{} --> {}", photoName, e.getMessage());
+                return responseError(methodName, "识别出错！");
+            }
+        } else {
+            logger.info("PhotoController::photoRecognition:failed:{}", "用户不存在！");
+            return responseError(methodName, "用户不存在！");
+        }
+    }
+
+    @RequestMapping(value = "/photo/recognitionOnline", method = RequestMethod.POST)
+    public ResponseEntity<?> photoRecognitionOnline(@RequestParam("photoName") String photoName) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        User user = getCurrentUser();
+        if (user != null) {
+            try {
+                String photo_path = Constants.PHOTO_PATH.concat(user.getEmail()).concat(File.separator);
+                HorizontalCorrection.contoursBase(photo_path, photoName);
+                Map<String, String> tables = Segmentation.segment(photoName);
+                if (tables != null && tables.size() > 0) {
+                    List<Map<String, Object>> data = com.peng.certrecognition.ocr.Recognition.recognize(photoName, tables);
+                    Recognition recognition = recognitionService.addRecognition(photoName, photo_path, data);
+                    Map<String, Object> result = recognition.toMap();
+                    logger.info("PhotoController::photoRecognition:finished:{}", result);
+                    return responseSuccess(methodName, result, "识别成功！");
+                } else {
+                    logger.error("PhotoController::photoRecognition:failed:{} --> {}", photoName);
+                    return responseError(methodName, "识别无结果！");
                 }
             } catch (Exception e) {
                 logger.error("PhotoController::photoRecognition:failed:{} --> {}", photoName, e.getMessage());

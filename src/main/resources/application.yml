@@ -39,3 +39,6 @@ photo:
 
 python:
   path: D:/360Downloads/pythonWorkplace/CertificationRecognition_recognition/Application.py
+
+ocr:
+  path: F:/CertificationRecognition_backend/ocr/
